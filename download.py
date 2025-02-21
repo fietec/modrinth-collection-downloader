@@ -7,11 +7,14 @@ MOD_DIR = f"{USER_FOLDER}/AppData/Roaming/.minecraft/mods"
 FABRIC = "fabric"
 FORGE = "forge"
 
-def get_mods(s_collection, s_loader, s_version, output_dir=MOD_DIR):
-    content = requests.get(s_collection).content
+def get_mods(collection_path, s_loader, s_version, output_dir=MOD_DIR):
+    content = requests.get(collection_path).content
     parsed_html = BeautifulSoup(content, features="html.parser")
     articles = parsed_html.body.find_all('article')
     mods = [article.find('a', class_="icon").attrs['href'].split('/mod/')[1] for article in articles]
+    if len(mods) == 0:
+        print(f"[ERROR] Could not find any projects for '{collection_path}'! Please check whether this is a valid collection link.")
+        return
     print(f"Found projects ({len(mods)}): \n  {mods}")
     if not input("Continue? (y/n): ").startswith("y"):
         print("Interrupted!")
