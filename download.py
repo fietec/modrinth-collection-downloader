@@ -13,7 +13,9 @@ def get_mods(s_collection, s_loader, s_version, output_dir=MOD_DIR):
     articles = parsed_html.body.find_all('article')
     mods = [article.find('a', class_="icon").attrs['href'].split('/mod/')[1] for article in articles]
     print(f"Found projects ({len(mods)}): \n  {mods}")
-    input()
+    if not input("Continue? (y/n): ").startswith("y"):
+        print("Interrupted!")
+        return
     for mod in mods:
         print(f"Looking for versions of project '{mod}'..")
         url = f"https://api.modrinth.com/v2/project/{mod}/version"
